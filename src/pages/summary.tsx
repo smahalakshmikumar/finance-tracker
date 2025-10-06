@@ -2,13 +2,20 @@ import { useSelector } from "react-redux";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import { RootState } from "../../store";
 
-const generateColors = (num: number) => {
-  const colors = [];
-  for (let i = 0; i < num; i++) {
-    const hue = (i * 360) / num; // spread around the color wheel
-    colors.push(`hsl(${hue}, 70%, 50%)`);
-  }
-  return colors;
+const generateColor = (
+  type: string,
+  
+) => {
+  // Pick hue range based on type
+  const hue =
+    type === "income"
+      ? 120 + Math.random() * 100 // greens/blues
+      : 0 + Math.random() * 20; // reds/pinks
+
+  const saturation = 70 + Math.random() * 10; // 70-80%
+  const lightness = 50 + Math.random() * 10; // 50-60%
+
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
 
 export default function SummaryPage() {
@@ -18,13 +25,17 @@ export default function SummaryPage() {
 
   const data = Object.values(
     transactions.reduce((acc, t) => {
-      acc[t.category] = acc[t.category] || { name: t.category, value: 0 };
+      acc[t.category] = acc[t.category] || {
+        name: t.category,
+        value: 0,
+        type: t.type,
+      };
       acc[t.category].value += t.amount;
       return acc;
-    }, {} as Record<string, { name: string; value: number }>)
+    }, {} as Record<string, { name: string; value: number; type: string }>)
   );
 
-  const COLORS = generateColors(data.length);
+  //const COLORS = generateColors(data.length);
 
   return (
     <div className="p-8">
@@ -38,10 +49,11 @@ export default function SummaryPage() {
           cy="50%"
           outerRadius={150}
         >
-          {data.map((_, i) => (
-            <Cell key={i} fill={COLORS[i % COLORS.length]} />
+          {data.map((entry, i) => (
+            <Cell key={i} fill={generateColor(entry.type)} />
           ))}
         </Pie>
+
         <Tooltip />
         <Legend />
       </PieChart>
