@@ -2,9 +2,13 @@ import { Transaction } from "@/types/transaction";
 
 interface TransactionListProps {
   transactions: Transaction[];
+  onDelete: (id: string) => void;
 }
 
-export const TransactionList = ({ transactions }: TransactionListProps) => {
+export const TransactionList = ({
+  transactions,
+  onDelete,
+}: TransactionListProps) => {
   if (transactions.length === 0)
     return <p className="text-gray-500">No transactions yet.</p>;
 
@@ -22,6 +26,12 @@ export const TransactionList = ({ transactions }: TransactionListProps) => {
           <p className="text-sm text-gray-600">
             {t.category} • {new Date(t.date).toLocaleDateString()}
           </p>
+          <button
+            onClick={() => onDelete(t.id)}
+            className="text-red-500 hover:text-red-600"
+          >
+            Delete
+          </button>
         </div>
       ))}
     </div>

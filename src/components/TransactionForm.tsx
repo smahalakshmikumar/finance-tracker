@@ -5,17 +5,29 @@ import { transactionSchema } from "../utils/validationSchema";
 import { Transaction, TransactionFormData } from "../types/transaction";
 
 interface TransactionFormProps {
-  addTransaction: (transaction: Transaction) => void;
+  addTransaction: (tx: Omit<Transaction, "id">) => void;
+  hasIncome: boolean;
 }
 
-export const TransactionForm = ({ addTransaction }: TransactionFormProps) => {
+export const TransactionForm = ({
+  addTransaction,
+  hasIncome,
+}: TransactionFormProps) => {
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    watch,
+    formState: { errors, isValid },
   } = useForm<TransactionFormData>({
     resolver: yupResolver(transactionSchema),
+    mode: "onChange", // <-- validate fields as user types
+    defaultValues: {
+      title: "",
+      amount: 0,
+      type: "" as any,
+      category: "",
+    },
   });
 
   const onSubmit = (data: TransactionFormData) => {
@@ -28,8 +40,11 @@ export const TransactionForm = ({ addTransaction }: TransactionFormProps) => {
     reset();
   };
 
+  const selectedType = watch("type"); // watch the selected type
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
+      {/* Title */}
       <div>
         <label className="block mb-1 font-medium">Title</label>
         <input
@@ -42,6 +57,7 @@ export const TransactionForm = ({ addTransaction }: TransactionFormProps) => {
         )}
       </div>
 
+      {/* Amount */}
       <div>
         <label className="block mb-1 font-medium">Amount (€)</label>
         <input
@@ -54,6 +70,7 @@ export const TransactionForm = ({ addTransaction }: TransactionFormProps) => {
         )}
       </div>
 
+      {/* Type */}
       <div>
         <label className="block mb-1 font-medium">Type</label>
         <select {...register("type")} className="border rounded-lg w-full p-2">
@@ -66,6 +83,7 @@ export const TransactionForm = ({ addTransaction }: TransactionFormProps) => {
         )}
       </div>
 
+      {/* Category */}
       <div>
         <label className="block mb-1 font-medium">Category</label>
         <input
@@ -78,9 +96,15 @@ export const TransactionForm = ({ addTransaction }: TransactionFormProps) => {
         )}
       </div>
 
+      {/* Submit button */}
       <button
         type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+        disabled={!isValid || (selectedType === "expense" && !hasIncome)}
+        className={`px-4 py-2 rounded-lg text-white transition-all ${
+          !isValid || (selectedType === "expense" && !hasIncome)
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-blue-600 hover:bg-blue-700"
+        }`}
       >
         Add Transaction
       </button>
