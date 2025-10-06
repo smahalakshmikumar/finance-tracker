@@ -1,23 +1,17 @@
-import React from 'react';
-
 interface SummaryCardProps {
-  title: string;
-  amount: number;
-  type: 'income' | 'expense' | 'balance';
-}
-
-const SummaryCard: React.FC<SummaryCardProps> = ({ title, amount, type }) => {
-  const bgColor =
-    type === 'income' ? 'bg-green-200' :
-    type === 'expense' ? 'bg-red-200' :
-    'bg-blue-200';
-
-  return (
-    <div className={`p-4 rounded shadow flex-1 ${bgColor}`}>
-      <h2 className="text-lg font-semibold">{title}</h2>
-      <p className="text-2xl font-bold">{amount.toFixed(2)} €</p>
+    title: string;
+    amount: number;
+    type: "income" | "expense";
+  }
+  
+  export const SummaryCard = ({ title, amount, type }: SummaryCardProps) => (
+    <div
+      className={`rounded-2xl p-4 shadow-md ${
+        type === "income" ? "bg-green-100" : "bg-red-100"
+      }`}
+    >
+      <h3 className="text-lg font-semibold">{title}</h3>
+      <p className="text-2xl font-bold mt-2">€{amount.toFixed(2)}</p>
     </div>
   );
-};
-
-export default SummaryCard;
+  

@@ -1,31 +1,29 @@
-import React from 'react';
-import { Transaction } from '../types';
+import { Transaction } from "@/types/transaction";
 
 interface TransactionListProps {
   transactions: Transaction[];
 }
 
-const TransactionList: React.FC<TransactionListProps> = ({ transactions }) => {
-  if (transactions.length === 0) return <p className="text-gray-500">No transactions yet.</p>;
+export const TransactionList = ({ transactions }: TransactionListProps) => {
+  if (transactions.length === 0)
+    return <p className="text-gray-500">No transactions yet.</p>;
 
   return (
-    <div className="flex flex-col gap-2">
-      {transactions.map(transaction => (
+    <div className="space-y-3 w-full">
+      {transactions.map((t) => (
         <div
-          key={transaction.id}
-          className={`flex justify-between p-2 rounded shadow ${
-            transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'
+          key={t.id}
+          className={`border rounded-xl p-3 ${
+            t.type === "income" ? "bg-green-50" : "bg-red-50"
           }`}
         >
-          <div>
-            <p className="font-semibold">{transaction.category}</p>
-            <p className="text-sm text-gray-600">{transaction.date}</p>
-          </div>
-          <div className="font-bold">{transaction.amount.toFixed(2)} €</div>
+          <p className="font-semibold">{t.title}</p>
+          <p>€{t.amount.toFixed(2)}</p>
+          <p className="text-sm text-gray-600">
+            {t.category} • {new Date(t.date).toLocaleDateString()}
+          </p>
         </div>
       ))}
     </div>
   );
 };
-
-export default TransactionList;
