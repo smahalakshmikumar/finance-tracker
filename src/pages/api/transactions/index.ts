@@ -7,7 +7,7 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     const newTx = req.body;
-    const { data, error } = await supabase.from("transactions").insert([newTx]);
+    const { data, error } = await supabase.from("transactions").insert([newTx]).select();
     if (error) return res.status(500).json({ error: error.message });
     data && res.status(200).json(data[0]);
   }
