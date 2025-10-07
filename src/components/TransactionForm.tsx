@@ -8,7 +8,7 @@ import React from "react";
 
 interface TransactionFormProps {
   addTransaction: (tx: Omit<Transaction, "id">) => Promise<void>;
-  hasIncome: boolean;
+  //hasIncome: boolean;
   disabled: boolean;
 }
 
@@ -23,7 +23,7 @@ const styles = {
 };
 
 export const TransactionForm = React.memo(
-  ({ addTransaction, hasIncome, disabled }: TransactionFormProps) => {
+  ({ addTransaction, disabled }: TransactionFormProps) => {
     const {
       register,
       handleSubmit,
@@ -54,22 +54,31 @@ export const TransactionForm = React.memo(
     const selectedType = watch("type");
 
     return (
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4 bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200"
+      >
         {/* Title */}
         <div>
-          <label htmlFor="title" className="block mb-1 font-medium">
+          <label
+            htmlFor="title"
+            className="block text-sm sm:text-base font-medium text-gray-700"
+          >
             Title
           </label>
           <input
             id="title"
             {...register("title")}
-            className={styles.input}
+            className="w-full p-3 sm:p-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
             disabled={disabled}
             placeholder="Enter title"
             aria-describedby={errors.title ? "title-error" : undefined}
           />
           {errors.title && (
-            <p id="title-error" className={styles.error}>
+            <p
+              id="title-error"
+              className="text-red-600 text-xs sm:text-sm mt-1"
+            >
               {errors.title.message}
             </p>
           )}
@@ -77,7 +86,10 @@ export const TransactionForm = React.memo(
 
         {/* Amount */}
         <div>
-          <label htmlFor="amount" className="block mb-1 font-medium">
+          <label
+            htmlFor="amount"
+            className="block text-sm sm:text-base font-medium text-gray-700"
+          >
             Amount (€)
           </label>
           <input
@@ -86,12 +98,15 @@ export const TransactionForm = React.memo(
             min="0"
             step="0.01"
             {...register("amount")}
+            className="w-full p-3 sm:p-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
             disabled={disabled}
-            className={styles.input}
             aria-describedby={errors.amount ? "amount-error" : undefined}
           />
           {errors.amount && (
-            <p id="amount-error" className={styles.error}>
+            <p
+              id="amount-error"
+              className="text-red-600 text-xs sm:text-sm mt-1"
+            >
               {errors.amount.message}
             </p>
           )}
@@ -99,21 +114,27 @@ export const TransactionForm = React.memo(
 
         {/* Type */}
         <div>
-          <label htmlFor="type" className="block mb-1 font-medium">
+          <label
+            htmlFor="type"
+            className="block text-sm sm:text-base font-medium text-gray-700"
+          >
             Type
           </label>
           <select
             id="type"
             {...register("type")}
+            className="w-full p-3 sm:p-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
             disabled={disabled}
-            className={styles.input}
             aria-describedby={errors.type ? "type-error" : undefined}
           >
+            <option value="" disabled>
+              Select type
+            </option>
             <option value="income">Income</option>
             <option value="expense">Expense</option>
           </select>
           {errors.type && (
-            <p id="type-error" className={styles.error}>
+            <p id="type-error" className="text-red-600 text-xs sm:text-sm mt-1">
               {errors.type.message}
             </p>
           )}
@@ -121,19 +142,25 @@ export const TransactionForm = React.memo(
 
         {/* Category */}
         <div>
-          <label htmlFor="category" className="block mb-1 font-medium">
+          <label
+            htmlFor="category"
+            className="block text-sm sm:text-base font-medium text-gray-700"
+          >
             Category
           </label>
           <input
             id="category"
             {...register("category")}
+            className="w-full p-3 sm:p-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
             disabled={disabled}
-            className={styles.input}
-            placeholder="e.g. Food, Salary"
+            placeholder="e.g., Food, Salary"
             aria-describedby={errors.category ? "category-error" : undefined}
           />
           {errors.category && (
-            <p id="category-error" className={styles.error}>
+            <p
+              id="category-error"
+              className="text-red-600 text-xs sm:text-sm mt-1"
+            >
               {errors.category.message}
             </p>
           )}
@@ -142,21 +169,12 @@ export const TransactionForm = React.memo(
         {/* Submit button */}
         <button
           type="submit"
-          disabled={
-            disabled || !isValid || (selectedType === "expense" && !hasIncome)
-          }
-          className={
-            !isValid || (selectedType === "expense" && !hasIncome)
-              ? styles.button.disabled
-              : styles.button.primary
-          }
-          title={
-            selectedType === "expense" && !hasIncome
-              ? "Add income first to enable expense submission"
-              : disabled
-              ? "Processing transaction..."
-              : undefined
-          }
+          disabled={disabled || !isValid}
+          className={`w-full sm:w-auto px-4 py-3 rounded-lg text-white font-medium transition-colors ${
+            !isValid
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
+          }`}
         >
           {disabled ? "Adding..." : "Add Transaction"}
         </button>

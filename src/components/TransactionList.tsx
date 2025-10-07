@@ -6,12 +6,6 @@ interface TransactionListProps {
   onDelete: (id: string) => void;
 }
 
-const styles = {
-  card: "border border-gray-200 rounded-xl p-3", // Specific border color
-  error: "text-red-500 text-sm",
-  deleteButton: "text-red-500 hover:text-red-600",
-};
-
 const TransactionItem = React.memo(
   ({
     transactionItem,
@@ -20,38 +14,55 @@ const TransactionItem = React.memo(
     transactionItem: Transaction;
     onDelete: (id: string) => void;
   }) => {
-    const { title, category, date, id, amount } = transactionItem;
+    const { title, category, date, id, amount, type } = transactionItem;
 
     return (
       <div
-        className={`${styles.card} ${
-          transactionItem.type === "income" ? "bg-green-50" : "bg-red-50"
+        className={`flex justify-between items-center p-3 sm:p-4 border border-gray-200 rounded-lg shadow-sm ${
+          type === "income" ? "bg-green-50" : "bg-red-50"
         }`}
       >
-        <p className="font-semibold">{title}</p>
-        <p>€{amount.toFixed(2)}</p>
-        <p className="text-sm text-gray-600">
-          {category} • {new Date(date).toLocaleDateString()}
-        </p>
-        <button
-          onClick={() => {
-            if (window.confirm(`Delete transaction "${title}"?`)) {
-              try {
-                onDelete(id);
-              } catch (err) {
-                alert(
-                  `Failed to delete transaction: ${
-                    err instanceof Error ? err.message : "Unknown error"
-                  }`
-                );
+        <div className="space-y-1">
+          <p className="text-sm sm:text-base font-semibold text-gray-800">
+            {title}
+          </p>
+          <p className="text-xs sm:text-sm text-gray-600">
+            {category} •{" "}
+            {new Date(date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <p
+            className={`text-sm sm:text-base font-bold ${
+              type === "income" ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            €{amount.toFixed(2)}
+          </p>
+          <button
+            onClick={() => {
+              if (window.confirm(`Delete transaction "${title}"?`)) {
+                try {
+                  onDelete(id);
+                } catch (err) {
+                  alert(
+                    `Failed to delete transaction: ${
+                      err instanceof Error ? err.message : "Unknown error"
+                    }`
+                  );
+                }
               }
-            }
-          }}
-          className={styles.deleteButton}
-          aria-label={`Delete transaction ${title}`}
-        >
-          Delete
-        </button>
+            }}
+            className="p-2 text-red-600 hover:bg-red-100 rounded-full transition-colors"
+            aria-label={`Delete transaction ${title}`}
+          >
+            <span className="text-lg">×</span>
+          </button>
+        </div>
       </div>
     );
   }
@@ -59,12 +70,13 @@ const TransactionItem = React.memo(
 
 export const TransactionList = React.memo(
   ({ transactions, onDelete }: TransactionListProps) => {
-    if (transactions.length === 0)
+    if (transactions.length === 0) {
       return (
-        <p className="text-gray-500">
+        <p className="text-center text-sm sm:text-base text-gray-500">
           No transactions yet. Add one to get started!
         </p>
       );
+    }
 
     return (
       <div className="space-y-3 w-full">

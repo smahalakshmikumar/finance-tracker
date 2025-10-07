@@ -22,7 +22,7 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddTransaction = async (newTx: Omit<Transaction, "id">) => {
-    if (!transactions.some((t) => t.type === "income") && newTx.type !== "expense") {
+    if (transactions.length === 0 && newTx.type === "expense") {
       setErrorMessage("Please add your income first.");
       return;
     }
@@ -30,10 +30,14 @@ export default function Home() {
     try {
       await addTransaction(newTx);
     } catch (error) {
-      console.error("addTransaction error:", error); // Log for debugging
-      setErrorMessage(`Failed to add transaction: ${error instanceof Error ? error.message : "Unknown error"}`);
+      console.error("addTransaction error:", error);
+      setErrorMessage(
+        `Failed to add transaction: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     } finally {
-      setIsSubmitting(false); // Always reset isSubmitting
+      setIsSubmitting(false);
     }
   };
 
@@ -85,29 +89,29 @@ export default function Home() {
   const hasIncome = transactions.some((t) => t.type === "income");
 
   return (
-    <main className="max-w-2xl mx-auto p-6 space-y-6">
-      <h1 className="text-3xl font-bold text-center">
+    <main className="w-full max-w-2xl mx-auto p-4 sm:p-6 space-y-6">
+      <h1 className="text-2xl sm:text-3xl font-bold text-center">
         Personal Finance Tracker
       </h1>
 
       {isLoading ? (
-        <p>Loading transactions...</p>
+        <p className="text-center">Loading transactions...</p>
       ) : (
         <>
           {errorMessage && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-              <span>{errorMessage}</span>
+              <span className="text-sm sm:text-base">{errorMessage}</span>
               <button
                 onClick={() => setErrorMessage(null)}
-                className="absolute top-0 right-0 px-4 py-3"
+                className="absolute top-2 right-2 p-2"
                 aria-label="Dismiss error message"
               >
-                <span className="text-red-700">&times;</span>
+                <span className="text-red-700 text-xl">&times;</span>
               </button>
             </div>
           )}
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <SummaryCard title="Income" amount={totalIncome} type="income" />
             <SummaryCard title="Expense" amount={totalExpense} type="expense" />
             <SummaryCard
@@ -119,7 +123,6 @@ export default function Home() {
 
           <TransactionForm
             addTransaction={handleAddTransaction}
-            hasIncome={hasIncome}
             disabled={isSubmitting}
           />
           <TransactionList
@@ -127,17 +130,18 @@ export default function Home() {
             onDelete={handleRemoveTransaction}
           />
 
-          <div className="mt-6 flex justify-end space-x-4">
+          <div className="mt-6 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4">
             <button
               onClick={handleClearData}
-              className="px-4 py-2 rounded-md text-white bg-red-600 hover:bg-red-700"
+              className="px-4 py-3 rounded-md text-white bg-red-600 hover:bg-red-700 text-base"
             >
               Clear Data
             </button>
             <button
               onClick={handleViewSummary}
               disabled={!hasSummary}
-              className="px-4 py-2 rounded-md text-white transition-all disabled:bg-gray-400 disabled:cursor-not-allowed bg-blue-600 hover:bg-blue-700"
+              aria-disabled={!hasSummary}
+              className="px-4 py-3 rounded-md text-white transition-all disabled:bg-gray-400 disabled:cursor-not-allowed bg-blue-600 hover:bg-blue-700 text-base"
               title={
                 !hasSummary ? "Add transactions to view summary" : undefined
               }

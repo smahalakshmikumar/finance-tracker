@@ -15,7 +15,7 @@ A web-based application for tracking personal income and expenses, built with Ne
 
 ## Tech Stack
 
-- **Frontend**: Next.js 13, React, TypeScript, Tailwind CSS
+- **Frontend**: Next.js 15, React, TypeScript, Tailwind CSS
 - **State Management**: Redux Toolkit
 - **Form Handling**: `react-hook-form`, `yup`
 - **Backend**: Supabase (PostgreSQL)
