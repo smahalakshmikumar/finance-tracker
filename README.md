@@ -1,40 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Personal Finance Tracker
 
-## Getting Started
+A web-based application for tracking personal income and expenses, built with Next.js, React, and Supabase. Users can add, delete, and view transactions, with real-time summaries of total income, expenses, and balance. The app features optimistic updates for a smooth user experience, form validation, and a responsive design.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Add Transactions**: Record income or expenses with title, amount, type, and category.
+- **Real-Time Summaries**: View total income, expenses, and balance in summary cards.
+- **Delete Transactions**: Remove individual transactions with a single click.
+- **Clear Data**: Reset all transactions with a confirmation prompt.
+- **Form Validation**: Client-side validation using `react-hook-form` and `yup`.
+- **Optimistic Updates**: Transactions appear instantly in the UI, with rollback on failure.
+- **Supabase Backend**: Persistent storage in a PostgreSQL database.
+- **Responsive UI**: Styled with Tailwind CSS for mobile and desktop compatibility.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+- **Frontend**: Next.js 13, React, TypeScript, Tailwind CSS
+- **State Management**: Redux Toolkit
+- **Form Handling**: `react-hook-form`, `yup`
+- **Backend**: Supabase (PostgreSQL)
+- **Utilities**: `uuid` for unique IDs,
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Prerequisites
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+- Node.js (v16 or higher)
+- npm or yarn
+- Supabase account and project
+- Git
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Setup Instructions
 
-## Learn More
+1. **Clone the Repository**
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   git clone <your-repository-url>
+   cd personal-finance-tracker
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+2. **Install Dependencies**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
-## Deploy on Vercel
+3. **Configure Environment Variables**
+   Create a `.env.local` file in the project root and add your Supabase credentials:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```env
+   SUPABASE_URL=your-supabase-project-url
+   SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+   - Find these in your Supabase project’s Settings > API.
+
+4. **Set Up Supabase Table**
+
+   - In Supabase, create a `transactions` table via the SQL Editor:
+     ```sql
+     CREATE TABLE transactions (
+       id TEXT PRIMARY KEY,
+       title TEXT NOT NULL,
+       amount NUMERIC NOT NULL,
+       type TEXT NOT NULL CHECK (type IN ('income', 'expense')),
+       category TEXT NOT NULL,
+       date TIMESTAMP NOT NULL
+     );
+     ```
+
+5. **Run the Development Server**
+
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+   Open `http://localhost:3000` in your browser to view the app.
+
+6. **Build for Production**
+   ```bash
+   npm run build
+   npm run start
+   ```
+
+## Usage
+
+- **Add a Transaction**: Enter details (title, amount, type, category) in the form and submit. Income must be added before expenses.
+- **View Summaries**: Check the summary cards for total income, expenses, and balance.
+- **Delete Transactions**: Click the delete button next to a transaction to remove it.
+- **Clear All Data**: Use the "Clear Data" button to delete all transactions (requires confirmation).
+- **View Summary Page**: Navigate to `/summary` for detailed analytics.
+
+
+## Contributing
+
+1. Fork the repository.
+2. Create a feature branch: `git checkout -b feature/your-feature-name`.
+3. Commit changes: `git commit -m "Add your feature"`.
+4. Push to the branch: `git push origin feature/your-feature-name`.
+5. Open a pull request.
+
+## Deployment
+
+- **Vercel**:
+  1. Push your code to a GitHub repository.
+  2. Connect to Vercel and import the repository.
+  3. Add `SUPABASE_URL` and `SUPABASE_ANON_KEY` as environment variables in Vercel’s dashboard.
+  4. Deploy the app.
+- Ensure your Supabase project’s region is close to your deployment region for low latency.
+
+## License
+
+MIT License
