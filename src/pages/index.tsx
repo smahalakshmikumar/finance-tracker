@@ -86,7 +86,6 @@ export default function Home() {
   );
 
   const hasSummary = transactions.length > 0;
-  const hasIncome = transactions.some((t) => t.type === "income");
 
   return (
     <main className="w-full max-w-2xl mx-auto p-4 sm:p-6 space-y-6">
@@ -123,7 +122,7 @@ export default function Home() {
 
           <TransactionForm
             addTransaction={handleAddTransaction}
-            disabled={isSubmitting}
+            isSubmitting={isSubmitting}
           />
           <TransactionList
             transactions={transactions}
@@ -133,7 +132,12 @@ export default function Home() {
           <div className="mt-6 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4">
             <button
               onClick={handleClearData}
-              className="px-4 py-3 rounded-md text-white bg-red-600 hover:bg-red-700 text-base"
+              className="px-4 py-3 rounded-md text-white transition-all disabled:bg-red-400 disabled:cursor-not-allowed bg-red-600 hover:bg-red-700 text-base"
+              title={
+                !hasSummary ? "Add transactions to view summary" : undefined
+              }
+              disabled={!hasSummary}
+              aria-disabled={!hasSummary}
             >
               Clear Data
             </button>

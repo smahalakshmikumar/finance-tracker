@@ -8,22 +8,11 @@ import React from "react";
 
 interface TransactionFormProps {
   addTransaction: (tx: Omit<Transaction, "id">) => Promise<void>;
-  //hasIncome: boolean;
-  disabled: boolean;
+  isSubmitting: boolean;
 }
 
-const styles = {
-  input: "border border-gray-300 rounded-lg w-full p-2",
-  error: "text-red-500 text-sm",
-  button: {
-    primary:
-      "bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2 transition-all",
-    disabled: "bg-gray-400 cursor-not-allowed text-white rounded-lg px-4 py-2",
-  },
-};
-
 export const TransactionForm = React.memo(
-  ({ addTransaction, disabled }: TransactionFormProps) => {
+  ({ addTransaction, isSubmitting }: TransactionFormProps) => {
     const {
       register,
       handleSubmit,
@@ -70,7 +59,7 @@ export const TransactionForm = React.memo(
             id="title"
             {...register("title")}
             className="w-full p-3 sm:p-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
-            disabled={disabled}
+            disabled={isSubmitting}
             placeholder="Enter title"
             aria-describedby={errors.title ? "title-error" : undefined}
           />
@@ -99,7 +88,7 @@ export const TransactionForm = React.memo(
             step="0.01"
             {...register("amount")}
             className="w-full p-3 sm:p-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
-            disabled={disabled}
+            disabled={isSubmitting}
             aria-describedby={errors.amount ? "amount-error" : undefined}
           />
           {errors.amount && (
@@ -124,7 +113,7 @@ export const TransactionForm = React.memo(
             id="type"
             {...register("type")}
             className="w-full p-3 sm:p-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
-            disabled={disabled}
+            disabled={isSubmitting}
             aria-describedby={errors.type ? "type-error" : undefined}
           >
             <option value="" disabled>
@@ -152,7 +141,7 @@ export const TransactionForm = React.memo(
             id="category"
             {...register("category")}
             className="w-full p-3 sm:p-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
-            disabled={disabled}
+            disabled={isSubmitting}
             placeholder="e.g., Food, Salary"
             aria-describedby={errors.category ? "category-error" : undefined}
           />
@@ -169,14 +158,14 @@ export const TransactionForm = React.memo(
         {/* Submit button */}
         <button
           type="submit"
-          disabled={disabled || !isValid}
+          disabled={isSubmitting || !isValid}
           className={`w-full sm:w-auto px-4 py-3 rounded-lg text-white font-medium transition-colors ${
             !isValid
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-blue-600 hover:bg-blue-700"
           }`}
         >
-          {disabled ? "Adding..." : "Add Transaction"}
+          {isSubmitting ? "Adding..." : "Add Transaction"}
         </button>
       </form>
     );
