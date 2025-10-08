@@ -8,6 +8,8 @@ import {
   addTransaction as addTransactionRedux,
 } from "../../store/transactionsSlice";
 
+const BASE_API_URL = `/api/transactions/`;
+
 // Custom hook for transaction management
 export const useTransactions = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -30,9 +32,9 @@ export const useTransactions = () => {
     const fetchTransactions = async () => {
       try {
         setIsLoading(true);
-        const res = await fetch("/api/transactions");
+        const res = await fetch(`${BASE_API_URL}`);
         if (!res.ok) throw new Error("Failed to fetch transactions");
-        const data = (await res.json()) as Transaction[];
+        const data: Transaction[] = await res.json();
         dispatch(setTransactions(data));
       } catch (err: any) {
         setErrorMessage(err.message || "Failed to load transactions");
@@ -52,13 +54,13 @@ export const useTransactions = () => {
     dispatch(addTransactionRedux(optimisticTransaction));
 
     try {
-      const res = await fetch("/api/transactions", {
+      const res = await fetch(`${BASE_API_URL}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTx),
       });
       if (!res.ok) throw new Error("Failed to add transaction");
-      const data = (await res.json()) as Transaction;
+      const data: Transaction = await res.json();
       dispatch(removeTransaction(optimisticTransaction.id));
       dispatch(addTransactionRedux(data));
       setErrorMessage(null);
@@ -73,7 +75,7 @@ export const useTransactions = () => {
     dispatch(removeTransaction(id));
 
     try {
-      const res = await fetch(`/api/transactions/${id}`, { method: "DELETE" });
+      const res = await fetch(`${BASE_API_URL}/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete transaction");
       setErrorMessage(null);
     } catch (err: any) {
@@ -87,11 +89,10 @@ export const useTransactions = () => {
     setErrorMessage(null);
     try {
       setIsLoading(true);
-      const res = await fetch("/api/transactions", {
-        method: "DELETE", 
+      const res = await fetch(`${BASE_API_URL}`, {
+        method: "DELETE",
       });
       if (!res.ok) throw new Error("Failed to clear transactions");
-      
     } catch (err: any) {
       setErrorMessage(err.message || "Failed to clear transactions");
     } finally {
