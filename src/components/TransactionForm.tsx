@@ -7,7 +7,7 @@ import { Transaction, TransactionFormData } from "../types/transaction";
 import React from "react";
 
 interface TransactionFormProps {
-  addTransaction: (tx: Omit<Transaction, "id">) => Promise<void>;
+  addTransaction: (tx: Transaction) => void;
   isSubmitting: boolean;
 }
 

@@ -3,10 +3,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface TransactionsState {
   items: Transaction[];
+  error: string | null;
 }
 
 const initialState: TransactionsState = {
   items: [],
+  error: null,
 };
 
 const transactionsSlice = createSlice({
@@ -22,8 +24,11 @@ const transactionsSlice = createSlice({
     setTransactions: (state, action: PayloadAction<Transaction[]>) => {
       state.items = action.payload;
     },
+    setError: (state, action: PayloadAction<string | null>) => {
+      state.error = action.payload;
+    },
   },
 });
 
-export const { addTransaction, removeTransaction, setTransactions } = transactionsSlice.actions;
+export const { addTransaction, removeTransaction, setTransactions, setError } = transactionsSlice.actions;
 export default transactionsSlice.reducer;

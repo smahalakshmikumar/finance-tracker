@@ -7,60 +7,65 @@ import { TransactionList } from "../components/TransactionList";
 import { useRouter } from "next/router";
 import { Transaction } from "@/types/transaction";
 import { useTransactions } from "@/hooks/useTransaction";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store";
+import { setError } from "../../store/slices/transactionsSlice";
 
 export default function Home() {
   const router = useRouter();
   const {
     transactions,
     errorMessage,
-    setErrorMessage,
     isLoading,
     addTransaction,
     deleteTransaction,
     clearData,
   } = useTransactions();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
 
-  const handleAddTransaction = async (newTx: Omit<Transaction, "id">) => {
+  const handleAddTransaction = (newTx: Transaction) => {
     if (transactions.length === 0 && newTx.type === "expense") {
-      setErrorMessage("Please add your income first.");
+      dispatch(setError("Please add your income first."));
       return;
     }
     setIsSubmitting(true);
     try {
-      await addTransaction(newTx);
+      addTransaction(newTx);
     } catch (error) {
       console.error("addTransaction error:", error);
-      setErrorMessage(
-        `Failed to add transaction: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
+      dispatch(
+        setError(
+          `Failed to add transaction: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`
+        )
       );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleRemoveTransaction = async (id: string) => {
+  const handleRemoveTransaction = (id: string) => {
     setIsSubmitting(true);
     try {
-      await deleteTransaction(id);
+      deleteTransaction(id);
     } catch (error) {
-      setErrorMessage("Failed to delete transaction.");
+      dispatch(setError("Failed to delete transaction."));
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleClearData = async () => {
+  const handleClearData = () => {
     if (window.confirm("Are you sure you want to clear all transactions?")) {
-      await clearData();
+      clearData();
     }
   };
 
   const handleViewSummary = () => {
     if (transactions.length === 0) {
-      setErrorMessage("No transactions available to view summary.");
+      dispatch(setError("No transactions available to view summary."));
       return;
     }
     router.push("/summary");
@@ -101,7 +106,7 @@ export default function Home() {
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
               <span className="text-sm sm:text-base">{errorMessage}</span>
               <button
-                onClick={() => setErrorMessage(null)}
+                onClick={() => dispatch(setError(null))}
                 className="absolute top-2 right-2 p-2"
                 aria-label="Dismiss error message"
               >
